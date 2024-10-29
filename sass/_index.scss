@@ -1,0 +1,23 @@
+body {
+  &::-webkit-scrollbar {
+    //ocultar el scrool bar
+    display: none;
+  }
+}
+.title-home {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.container-body {
+  height: 100vh;
+}
+
+.container-welcome{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 40rem;
+}
+

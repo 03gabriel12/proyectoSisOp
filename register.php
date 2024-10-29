@@ -1,6 +1,7 @@
-<form action="register_process.php" method="POST">
-    <input type="text" name="username" placeholder="Nombre de usuario" required>
-    <input type="email" name="email" placeholder="Correo electrónico" required>
-    <input type="password" name="password" placeholder="Contraseña" required>
-    <button type="submit">Registrarse</button>
+<div class="title">Sign up</div>
+<form class="flip-card__form" form action="register_process.php" method="POST">
+    <input class="flip-card__input" name="username" placeholder="Nombre de Usuario" type="name" require>
+    <input class="flip-card__input" name="email" placeholder="Correo Electronico" type="email" require>
+    <input class="flip-card__input" name="password" placeholder="Contraseña" type="password" require>
+    <button class="flip-card__btn">Register</button>
 </form>

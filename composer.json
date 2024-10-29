@@ -1,0 +1,14 @@
+{
+    "name": "leand/sistema-usuario",
+    "description": "para proyecto",
+    "type": "project",
+    "authors": [
+        {
+            "name": "03gabriel12",
+            "email": "leandro.rodriguez@utp.ac.pa"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
