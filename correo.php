@@ -28,7 +28,7 @@ function EnviarCorreo($para, $asunto, $html, $test = false)
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587; // Puerto TCP para SSL
 
-        $mail->setFrom(email_sender, 'noreplayEmail');
+        $mail->setFrom(email_sender, 'Verificacion de Cuenta Sistema de Usuario');
         $mail->addAddress($para);
 
         // Captura y procesa el contenido de 'correo_html.php' con variables dinámicas
@@ -43,8 +43,8 @@ function EnviarCorreo($para, $asunto, $html, $test = false)
        // $mail->Body =  file_get_contents($html);
 
         $mail->send();
-        echo 'El mensaje se envió correctamente';
     } catch (Exception $e) {
         echo "Error al enviar el mensaje: {$mail->ErrorInfo}";
+        die();
     }
 }

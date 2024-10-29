@@ -15,3 +15,11 @@
       </label>
    </div>
 </div>
+<div id="liveAlertPlaceholder"></div>
+
+<?php
+if (isset($_GET['message'])) {
+   echo "<script>alert('" . htmlspecialchars($_GET['message']) . "');
+   </script>";
+}
+?>

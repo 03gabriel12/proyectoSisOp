@@ -8,41 +8,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
     $verification_code = bin2hex(random_bytes(16));
 
-    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$username, $email, $password, $verification_code]);
+    // Usa una declaración preparada para evitar inyecciones SQL
+    $stmt = $pdo->prepare("SELECT username FROM users WHERE username = :username");
+    $stmt->execute([':username' => $username]);
+    $usuario_validate = $stmt->fetchColumn(); // Si encuentra el usuario, lo devuelve
 
-    $verification_link = "http://localhost/Proyecto%20Final%20Sistema%20de%20Usuario/verify.php?code=$verification_code";
+    if (empty($usuario_validate)) {
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$username, $email, $password, $verification_code]);
 
-    $subject = "Verificacion de cuenta";
-    //$message = "Hola $username ,password :  {$_POST["password"]}, haz clic en el siguiente enlace para verificar tu cuenta: <a href='$verification_link'> ingrese al enlace para verificar su correo</a> <br><br>";
+        $verification_link = "http://localhost/Proyecto%20Final%20Sistema%20de%20Usuario/verify.php?code=$verification_code";
 
-    $message = "
-        <html>
-        <head>
-        <link rel='stylesheet' href='./sass/Style.css'>
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header'>
-                    <h1>Verificación de Cuenta</h1>
+        $subject = "Verificacion de cuenta";
+        $html = "
+            <html>
+            <head>
+            <link rel='stylesheet' href='./sass/Style.css'>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Verificacion de Cuenta</h1>
+                    </div>
+                    <div class='content'>
+                        <p>Hola <strong>$username</strong>,</p>
+                        <p>Tu contrasena es: <strong>{$_POST["password"]}</strong></p>
+                        <p>Haz clic en el siguiente enlace para verificar tu cuenta:</p>
+                        <p><a href='$verification_link'>Ingresa al enlace para verificar su correo</a></p>
+                    </div>
+                    <div class='footer'>
+                        <p>&copy; " . date("Y") . " Tu Empresa. Todos los derechos reservados.</p>
+                    </div>
                 </div>
-                <div class='content'>
-                    <p>Hola <strong>$username</strong>,</p>
-                    <p>Tu contrasena es: <strong>{$_POST["password"]}</strong></p>
-                    <p>Haz clic en el siguiente enlace para verificar tu cuenta:</p>
-                    <p><a href='$verification_link'>Ingresa al enlace para verificar su correo</a></p>
-                </div>
-                <div class='footer'>
-                    <p>&copy; " . date("Y") . " Tu Empresa. Todos los derechos reservados.</p>
-                </div>
-            </div>
-        </body>
-        </html>
-    ";
+            </body>
+            </html>
+        ";
 
-    $array_email = array('username' => $username, 'link' => $verification_link, 'password' => $_POST["password"]);
-    //$html = include 'correo_html.php';
-
-    echo EnviarCorreo($email, $subject, $html);
-    echo "Registro exitoso. Revisa tu correo para verificar tu cuenta.";
+        EnviarCorreo($email, $subject, $html);
+        $message = " Registro exitoso. Revisa tu correo para verificar tu cuenta.";
+    } else {
+        $message = "No se a podido registrar usuario !invalido ";
+    }
+    // Redirigir con el mensaje
+    header("Location: index.php?message=" . urlencode($message));
+    exit();
 }

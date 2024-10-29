@@ -12,9 +12,16 @@ if (isset($_GET["code"])) {
         $stmt = $pdo->prepare("UPDATE users SET is_verified = 1 WHERE verification_code = ?");
         $stmt->execute([$code]);
 
-        echo "Cuenta verificada. Ahora puedes iniciar sesión.";
+        $message ="Cuenta verificada. Ahora puedes iniciar sesión.";
     } else {
-        echo "Código de verificación inválido o cuenta ya verificada.";
+        $message= "Código de verificación inválido o cuenta ya verificada.";
     }
+      // Espera 2 segundos antes de redirigir
+      echo "<script>
+      alert('$message');
+      setTimeout(function() {
+          window.location.href = 'index.php';
+      }, 2000);
+    </script>";
 }
 ?>
